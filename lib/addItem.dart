@@ -6,13 +6,27 @@ class addItem extends StatefulWidget {
 }
 
 class _addItemState extends State<addItem> {
-
   TextEditingController imagecontroller = TextEditingController();
   TextEditingController namecontroller = TextEditingController();
   TextEditingController MPcontroller = TextEditingController();
   TextEditingController CPcontroller = TextEditingController();
   TextEditingController unitcontroller = TextEditingController();
   var fkey = GlobalKey<FormState>();
+  var filter = ['Vegetables', 'Fruits'];
+  var selectedItem;
+
+  int type = 0;
+
+  void dropdownfun(String newValueSelected) {
+    setState(() {
+      this.selectedItem = newValueSelected;
+      if (newValueSelected == 'Vegetables') {
+        type = 0;
+      } else {
+        type = 1;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +41,23 @@ class _addItemState extends State<addItem> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Container(
+                  height: 240,
+                  constraints: BoxConstraints(maxHeight: 40),
+                  child: DropdownButton<String>(
+                    hint: Text('Please Pick one Category'),
+                    items: filter.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text((value)),
+                      );
+                    }).toList(),
+                    value: selectedItem,
+                    onChanged: (String newValueSelected) {
+                      dropdownfun(newValueSelected);
+                    },
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                   child: TextFormField(
@@ -112,8 +143,7 @@ class _addItemState extends State<addItem> {
                   child: RaisedButton(
                     onPressed: () {
                       setState(() {
-                        if (fkey.currentState.validate()) {
-                        }
+                        if (fkey.currentState.validate()) {}
                       });
                     },
                     color: Colors.blue,

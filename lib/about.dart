@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/addItem.dart';
 import 'package:ecommerce_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,6 +78,11 @@ class _aboutState extends State<about> {
         ListTile(
           title: Text("Visit Us"),
           leading: Icon(Icons.computer),
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return addItem();
+            }));
+          },
         ),
         ListTile(
           title: Text("Sign Out"),

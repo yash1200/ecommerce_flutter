@@ -26,10 +26,10 @@ class _homePageState extends State<homePage> {
             ],
             bottom: TabBar(tabs: [
               Tab(
-                child: Text("Vegetables",style: TextStyle(fontSize: 15),),
+                child: Text("VEGETABLES",style: TextStyle(fontSize: 15),),
               ),
               Tab(
-                child: Text("Fruits",style: TextStyle(fontSize: 15),),
+                child: Text("FRUITS",style: TextStyle(fontSize: 15),),
               )
             ]),
           ),

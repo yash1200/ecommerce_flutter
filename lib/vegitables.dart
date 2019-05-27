@@ -11,13 +11,14 @@ class _vegetablesState extends State<vegetables> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: Container(
-            height: 150,
+            height: 145,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Expanded(
-                  flex: 6,
+                  flex: 5,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child:
@@ -29,75 +30,91 @@ class _vegetablesState extends State<vegetables> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Expanded(
                           child: Text(
                             document['name'],
                             style: TextStyle(
-                                fontStyle: FontStyle.italic, fontSize: 25),
+                                fontStyle: FontStyle.italic, fontSize: 20),
                           ),
                         ),
                         Expanded(
-                          child: Stack(
-                            alignment: Alignment.centerLeft,
+                          child: Wrap(
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                              Container(
+                                width: 60,
+                                child: Stack(
+                                  overflow: Overflow.clip,
+                                  alignment: Alignment.centerLeft,
                                   children: <Widget>[
-                                    Text(
-                                      document['mp'],
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.red),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 3),
+                                      child: Text(
+                                        document['mp'] + '/' + document['unit'],
+                                        style: TextStyle(
+                                            fontSize: 18, color: Colors.red),
+                                      ),
                                     ),
-                                    Text(
-                                      '/' + document['unit'],
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 18),
+                                    Divider(
+                                      height: 1,
+                                      color: Colors.red,
                                     )
                                   ],
                                 ),
                               ),
-                              Divider(
-                                height: 1,
-                                color: Colors.red,
-                              )
                             ],
                           ),
                         ),
                         Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15,right: 15),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    document['cp'],
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
+                          child: Wrap(
+                            children: <Widget>[
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        'Rs ' +
+                                            document['cp'] +
+                                            '/' +
+                                            document['unit'],
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    '/' + document['unit'],
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  )
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                         Expanded(
-                          child: Text(
-                            document['name'],
-                            style: TextStyle(
-                                fontStyle: FontStyle.italic, fontSize: 16),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Wrap(
+                              children: <Widget>[
+                                Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.blue),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 25, right: 25, top: 4, bottom: 4),
+                                    child: Text(
+                                      'Add to cart',
+                                      style: TextStyle(
+                                          fontSize: 17, color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -127,8 +144,10 @@ class _vegetablesState extends State<vegetables> {
             .getDocuments(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
             );
           } else {
             return ListView.builder(

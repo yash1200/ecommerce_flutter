@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class addItem extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class _addItemState extends State<addItem> {
   TextEditingController MPcontroller = TextEditingController();
   TextEditingController CPcontroller = TextEditingController();
   TextEditingController unitcontroller = TextEditingController();
+  String imageUrl, name, MP, CP, unit;
   var fkey = GlobalKey<FormState>();
   var filter = ['Vegetables', 'Fruits'];
   var selectedItem;
@@ -28,6 +30,41 @@ class _addItemState extends State<addItem> {
     });
   }
 
+  void addtoDataBase(String imageUrl, String name, String unit, String MP,
+      String CP, int type) {
+    if (type == 0) {
+      Firestore.instance
+          .collection('item')
+          .document('vegetables')
+          .collection('vegetables')
+          .document(DateTime.now().millisecondsSinceEpoch.toString())
+          .setData({
+        'cp': CP,
+        'mp': MP,
+        'name': name,
+        'imageUrl': imageUrl,
+        'unit': unit,
+        'type': type
+      });
+    }
+    else{
+      Firestore.instance
+          .collection('item')
+          .document('fruits')
+          .collection('fruits')
+          .document(DateTime.now().millisecondsSinceEpoch.toString())
+          .setData({
+        'cp': CP,
+        'mp': MP,
+        'name': name,
+        'imageUrl': imageUrl,
+        'unit': unit,
+        'type': type
+      });
+    }
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +79,8 @@ class _addItemState extends State<addItem> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: 240,
-                  constraints: BoxConstraints(maxHeight: 40),
+                  height: 60,
+                  constraints: BoxConstraints(maxHeight: 60),
                   child: DropdownButton<String>(
                     hint: Text('Please Pick one Category'),
                     items: filter.map((String value) {
@@ -78,6 +115,7 @@ class _addItemState extends State<addItem> {
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                   child: TextFormField(
                     controller: MPcontroller,
+                    keyboardType: TextInputType.number,
                     validator: (String valye) {
                       if (valye.isEmpty) {
                         return 'Please Enter Address';
@@ -94,6 +132,7 @@ class _addItemState extends State<addItem> {
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                   child: TextFormField(
                     controller: CPcontroller,
+                    keyboardType: TextInputType.number,
                     validator: (String valye) {
                       if (valye.isEmpty) {
                         return 'Please Enter Address';
@@ -143,7 +182,14 @@ class _addItemState extends State<addItem> {
                   child: RaisedButton(
                     onPressed: () {
                       setState(() {
-                        if (fkey.currentState.validate()) {}
+                        if (fkey.currentState.validate()) {
+                          imageUrl = imagecontroller.text;
+                          name = namecontroller.text;
+                          unit = unitcontroller.text;
+                          MP = MPcontroller.text;
+                          CP = CPcontroller.text;
+                          addtoDataBase(imageUrl, name, unit, MP, CP, type);
+                        }
                       });
                     },
                     color: Colors.blue,

@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/about.dart';
+import 'package:ecommerce_app/cart.dart';
 import 'package:ecommerce_app/fruits.dart';
 import 'package:ecommerce_app/vegitables.dart';
 import 'package:flutter/material.dart';
@@ -21,15 +22,28 @@ class _homePageState extends State<homePage> {
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 20),
-                child: Icon(Icons.shopping_cart),
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return cart();
+                      }));
+                    },
+                    child: Icon(Icons.shopping_cart)),
               )
             ],
             bottom: TabBar(tabs: [
               Tab(
-                child: Text("VEGETABLES",style: TextStyle(fontSize: 15),),
+                child: Text(
+                  "VEGETABLES",
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
               Tab(
-                child: Text("FRUITS",style: TextStyle(fontSize: 15),),
+                child: Text(
+                  "FRUITS",
+                  style: TextStyle(fontSize: 15),
+                ),
               )
             ]),
           ),

@@ -8,6 +8,9 @@ class vegetables extends StatefulWidget {
 
 class _vegetablesState extends State<vegetables> {
   buildItem(BuildContext context, DocumentSnapshot document) {
+    var percent = ((int.parse(document['mp']) - int.parse(document['cp'])) /
+            int.parse(document['mp'])) *
+        100;
     return Column(
       children: <Widget>[
         Padding(
@@ -44,7 +47,6 @@ class _vegetablesState extends State<vegetables> {
                           child: Wrap(
                             children: <Widget>[
                               Container(
-                                width: 60,
                                 child: Stack(
                                   overflow: Overflow.clip,
                                   alignment: Alignment.centerLeft,
@@ -57,9 +59,11 @@ class _vegetablesState extends State<vegetables> {
                                             fontSize: 18, color: Colors.red),
                                       ),
                                     ),
-                                    Divider(
-                                      height: 1,
-                                      color: Colors.red,
+                                    Positioned.fill(
+                                      child: Divider(
+                                        height: 1,
+                                        color: Colors.red,
+                                      ),
                                     )
                                   ],
                                 ),
@@ -70,26 +74,39 @@ class _vegetablesState extends State<vegetables> {
                         Expanded(
                           child: Wrap(
                             children: <Widget>[
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        'Rs ' +
-                                            document['cp'] +
-                                            '/' +
-                                            document['unit'],
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Text(
+                                            'Rs ' +
+                                                document['cp'] +
+                                                '/' +
+                                                document['unit'],
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(
+                                      '$percent% Off',
+                                      style: TextStyle(
+                                          color: Colors.blue, fontSize: 15),
+                                    ),
+                                  )
+                                ],
                               ),
                             ],
                           ),
@@ -97,23 +114,25 @@ class _vegetablesState extends State<vegetables> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 2),
-                            child: Wrap(
-                              children: <Widget>[
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.blue),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 25, right: 25, top: 4, bottom: 4),
-                                    child: Text(
-                                      'Add to cart',
-                                      style: TextStyle(
-                                          fontSize: 17, color: Colors.blue),
-                                    ),
+                            child: GestureDetector(
+                              onTap: () {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text('Item Added to cart')));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blue),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 25, right: 25, top: 4, bottom: 4),
+                                  child: Text(
+                                    'Add to cart',
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.blue),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),

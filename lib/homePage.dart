@@ -2,6 +2,7 @@ import 'package:ecommerce_app/about.dart';
 import 'package:ecommerce_app/cart.dart';
 import 'package:ecommerce_app/fruits.dart';
 import 'package:ecommerce_app/vegitables.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class homePage extends StatefulWidget {
@@ -10,6 +11,17 @@ class homePage extends StatefulWidget {
 }
 
 class _homePageState extends State<homePage> {
+
+  String id;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      id = user.uid;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,7 +38,7 @@ class _homePageState extends State<homePage> {
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return cart();
+                        return cart(id: id);
                       }));
                     },
                     child: Icon(Icons.shopping_cart)),

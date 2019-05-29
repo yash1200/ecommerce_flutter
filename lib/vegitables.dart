@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class vegetables extends StatefulWidget {
   @override
@@ -7,6 +8,17 @@ class vegetables extends StatefulWidget {
 }
 
 class _vegetablesState extends State<vegetables> {
+  String id;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      id = user.uid;
+    });
+  }
+
   buildItem(BuildContext context, DocumentSnapshot document) {
     var percent = ((int.parse(document['mp']) - int.parse(document['cp'])) /
             int.parse(document['mp'])) *
@@ -52,9 +64,9 @@ class _vegetablesState extends State<vegetables> {
                                   alignment: Alignment.centerLeft,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 3),
+                                      padding: const EdgeInsets.only(left: 0),
                                       child: Text(
-                                        document['mp'] + '/' + document['unit'],
+                                        'Rs '+document['mp'] + '/' + document['unit'],
                                         style: TextStyle(
                                             fontSize: 18, color: Colors.red),
                                       ),
@@ -115,9 +127,36 @@ class _vegetablesState extends State<vegetables> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 2),
                             child: GestureDetector(
-                              onTap: () {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text('Item Added to cart')));
+                              onTap: () async {
+                                final QuerySnapshot result = await Firestore
+                                    .instance
+                                    .collection('users')
+                                    .document(id)
+                                    .collection(id)
+                                    .where('name', isEqualTo: document['name'])
+                                    .getDocuments();
+                                final List<DocumentSnapshot> documents =
+                                    result.documents;
+                                if (documents.length == 0) {
+                                  Firestore.instance
+                                      .collection('users')
+                                      .document(id)
+                                      .collection(id)
+                                      .document(document['name'])
+                                      .setData({
+                                    'cp': document['cp'],
+                                    'mp':document['mp'],
+                                    'name':document['name'],
+                                    'imageUrl':document['imageUrl'],
+                                    'unit':document['unit'],
+                                    'quantity': 1
+                                  });
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Item Added to cart')));
+                                } else {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Item already in cart')));
+                                }
                               },
                               child: Container(
                                 decoration: BoxDecoration(

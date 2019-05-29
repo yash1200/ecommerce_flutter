@@ -32,8 +32,8 @@ class _loginState extends State<login> {
       if (_firebaseUser != null) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) {
-              return homePage();
-            }));
+          return homePage();
+        }));
       }
     });
   }

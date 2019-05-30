@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 // ignore: camel_case_types
 class cart extends StatefulWidget {
@@ -14,10 +13,28 @@ class cart extends StatefulWidget {
 
 // ignore: camel_case_types
 class _cartState extends State<cart> {
-  int count=1;
+  int count = 1, lengths = 0;
   String id;
 
   _cartState({Key key, @required this.id});
+
+  @override
+  void initState() {
+    super.initState();
+    getlength();
+  }
+
+  getlength() async {
+    final QuerySnapshot result =await Firestore.instance
+        .collection('users')
+        .document(id)
+        .collection(id)
+        .getDocuments();
+    final List<DocumentSnapshot> documents=result.documents;
+    setState(() {
+      lengths=documents.length;
+    });
+  }
 
   buildItem(BuildContext context, DocumentSnapshot document) {
     var percent = ((int.parse(document['mp']) - int.parse(document['cp'])) /
@@ -129,7 +146,9 @@ class _cartState extends State<cart> {
                             child: TextFormField(
                               keyboardType: TextInputType.number,
                               initialValue: "1",
-                              decoration: InputDecoration(hintText: 'Quantity',),
+                              decoration: InputDecoration(
+                                hintText: 'Quantity',
+                              ),
                             ),
                           ),
                         )
@@ -153,32 +172,59 @@ class _cartState extends State<cart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cart'),
+        title: Text('Cart($lengths)'),
       ),
-      body: Container(
-        child: FutureBuilder(
-          future: Firestore.instance
-              .collection('users')
-              .document(id)
-              .collection(id)
-              .getDocuments(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
-              );
-            } else {
-              return ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  return buildItem(context, snapshot.data.documents[index]);
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 11,
+            child: Container(
+              child: FutureBuilder(
+                future: Firestore.instance
+                    .collection('users')
+                    .document(id)
+                    .collection(id)
+                    .getDocuments(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                      ),
+                    );
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        return buildItem(
+                            context, snapshot.data.documents[index]);
+                      },
+                    );
+                  }
                 },
-              );
-            }
-          },
-        ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              color: Colors.orange,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Text('$lengths Items'),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:ecommerce_app/addItem.dart';
+import 'package:ecommerce_app/cart.dart';
 import 'package:ecommerce_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class about extends StatefulWidget {
   @override
@@ -10,9 +12,20 @@ class about extends StatefulWidget {
 
 class _aboutState extends State<about> {
 
+  String id;
   Future<FirebaseUser> getUser() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    id=user.uid;
     return user;
+  }
+
+  _launchURL() async {
+    const url = 'https://www.linkedin.com/in/yash-johri-61014717b/';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -56,6 +69,11 @@ class _aboutState extends State<about> {
           leading: Icon(Icons.home),
         ),
         ListTile(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return cart(id: id);
+            }));
+          },
           title: Text("Cart"),
           leading: Icon(Icons.shopping_cart),
         ),
@@ -64,6 +82,9 @@ class _aboutState extends State<about> {
           leading: Icon(Icons.add_shopping_cart),
         ),
         ListTile(
+          onTap: (){
+            _launchURL();
+          },
           title: Text("Say hi"),
           leading: Icon(Icons.mode_comment),
         ),
